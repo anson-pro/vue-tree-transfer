@@ -1,13 +1,17 @@
 <template>
   <div class="hello">
-    <el-input v-model="input" placeholder="请输入内容" @focus="showDialog"></el-input>
+    <el-input
+            :value="value"
+            placeholder="请输入内容"
+            @focus="showDialog"
+            readonly></el-input>
     <TreeTransferDialog
             :treeData="treeData"
             dialogTitle="选择人员"
             :transferTitle="['源', '目标']"
             :dialogVisible="dialogVisible"
             @close="handleClose"
-            :handleSubmit="handleSubmit">
+            @submit="handleSubmit">
     </TreeTransferDialog>
   </div>
 </template>
@@ -25,6 +29,7 @@ export default {
     return {
       dialogVisible: false,
       input: '',
+      value: '',
       treeData,
     };
   },
@@ -35,8 +40,8 @@ export default {
     showDialog() {
       this.dialogVisible = true;
     },
-    handleSubmit() {
-      this.dialogVisible = false;
+    handleSubmit(newValue) {
+      this.value = newValue;
     },
   },
 };

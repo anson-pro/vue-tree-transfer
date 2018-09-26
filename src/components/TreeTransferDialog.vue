@@ -17,7 +17,8 @@
                     :node-key="nodeKey"
                     :props="defaultProps"
                     :highlight-current="true"
-                    :expand-on-click-node="false">
+                    :expand-on-click-node="false"
+                    @node-click="handleNodeClick">
             </el-tree>
           </div>
         </div>
@@ -26,13 +27,17 @@
                   type="primary"
                   icon="el-icon-arrow-right"
                   circle
+                  :disabled="canAddNode"
                   @click="handleAdd">
           </el-button>
         </div>
         <div class="tree-transfer__right">
           <h3 class="tree-transfer__title">
             <span>{{ targetTitle }}</span>
-            <span class="tree-transfer__right-close">清空</span>
+            <span
+                  class="tree-transfer__right-close"
+                  @click="clearTargetNodes"
+                  v-if="isTargetNodesEmpty">清空</span>
           </h3>
           <div class="tree-transfer__list">
             <ul class="tree-transfer__list-ul">
@@ -54,6 +59,7 @@
 </template>
 
 <script>
+const LOCAL_KEY = 'targetNodesList';
 export default {
   name: 'TreeTransferDialog',
   props: {
@@ -82,10 +88,12 @@ export default {
       type: Array,
       default: () => ['源列表', '目标列表'],
     },
+    // 树形列表节点 key
     nodeKey: {
       type: String,
       default: 'id',
     },
+    // 树形列表 data 默认 prop
     defaultProps: {
       type: Object,
       default: () => ({ label: 'label', children: 'children' }),
@@ -96,26 +104,12 @@ export default {
       default: false,
       required: true,
     },
-    handleSubmit: {
-      type: Function,
-      required: true,
-    },
   },
   data() {
     return {
       visible: false,
-      targetNodes: [
-        {
-          id: 2,
-          label: '华北一区',
-          disabled: true,
-        },
-        {
-          id: 3,
-          label: '华北二区',
-          disabled: true,
-        },
-      ],
+      canAddNode: true,
+      targetNodes: [],
     };
   },
   computed: {
@@ -125,25 +119,58 @@ export default {
     targetTitle() {
       return this.transferTitle[1];
     },
+    isTargetNodesEmpty() {
+      return this.targetNodes.length !== 0;
+    },
   },
   watch: {
     dialogVisible(newValue) {
       this.visible = newValue;
     },
   },
-  created() {
+  mounted() {
     this.visible = this.dialogVisible;
+    if (this.getLocal(LOCAL_KEY) != null) {
+      this.targetNodes = this.getLocal(LOCAL_KEY);
+      console.log(this.targetNodes);
+    }
   },
   methods: {
     handleAdd() {
-      console.log(this.$refs.tree.getCurrentKey());
+      const currNode = this.$refs.tree.getCurrentNode();
+      const existed = this.isExistedTargetNode(currNode);
+      if (!existed) {
+        this.targetNodes.push(currNode);
+        this.canAddNode = true;
+      }
     },
-    handleDeleteItem() {
-
+    handleDeleteItem(id) {
+      this.targetNodes = this.targetNodes.filter(item => item[this.nodeKey] !== id);
+    },
+    handleSubmit() {
+      const value = this.targetNodes.map(item => item.label).toString();
+      this.$emit('submit', value);
+      this.setLocal(LOCAL_KEY, this.targetNodes);
+      this.modalClose();
+    },
+    handleNodeClick(node) {
+      this.canAddNode = this.isExistedTargetNode(node);
+    },
+    clearTargetNodes() {
+      this.targetNodes = [];
+    },
+    isExistedTargetNode(node) {
+      return this.targetNodes.some(item => item[this.nodeKey] === node[this.nodeKey]);
     },
     modalClose() {
       this.$emit('close');
       this.visible = false;
+    },
+    setLocal(key, value) {
+      localStorage.setItem(key, value);
+    },
+    getLocal(key) {
+      localStorage.getItem(key);
     },
   },
 };
