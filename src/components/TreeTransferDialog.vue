@@ -3,14 +3,8 @@
     <el-dialog
             :title="dialogTitle"
             :visible.sync="visible"
+            :before-close="modalClose"
             class="tree-transfer__dialog">
-      <button
-              type="button"
-              aria-label="Close"
-              class="el-dialog__headerbtn"
-              @click.stop="handleCancel">
-        <i class="el-dialog__close el-icon el-icon-close"></i>
-      </button>
       <section class="tree-transfer__content">
         <div class="tree-transfer__left">
           <h3 class="tree-transfer__title">
@@ -53,7 +47,7 @@
       </section>
       <span slot="footer" class="dialog-footer">
         <el-button size="mini" type="primary" @click="handleSubmit">确定</el-button>
-        <el-button size="mini" @click="handleCancel">取消</el-button>
+        <el-button size="mini" @click="modalClose">取消</el-button>
       </span>
     </el-dialog>
   </div>
@@ -137,15 +131,19 @@ export default {
       this.visible = newValue;
     },
   },
+  created() {
+    this.visible = this.dialogVisible;
+  },
   methods: {
-    handleCancel() {
-      this.$emit('update:dialogVisible', false);
-    },
     handleAdd() {
       console.log(this.$refs.tree.getCurrentKey());
     },
     handleDeleteItem() {
 
+    },
+    modalClose() {
+      this.$emit('close');
+      this.visible = false;
     },
   },
 };

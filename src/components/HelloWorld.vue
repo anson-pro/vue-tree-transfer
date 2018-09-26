@@ -5,7 +5,8 @@
             :treeData="treeData"
             dialogTitle="选择人员"
             :transferTitle="['源', '目标']"
-            :dialogVisible.sync="dialogVisible"
+            :dialogVisible="dialogVisible"
+            @close="handleClose"
             :handleSubmit="handleSubmit">
     </TreeTransferDialog>
   </div>
@@ -28,6 +29,9 @@ export default {
     };
   },
   methods: {
+    handleClose() {
+      this.dialogVisible = false;
+    },
     showDialog() {
       this.dialogVisible = true;
     },
