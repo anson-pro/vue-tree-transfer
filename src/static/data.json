@@ -1,0 +1,88 @@
+[
+  {
+    "id": 1,
+    "label": "国美集团",
+    "children": [
+      {
+        "id": 3,
+        "label": "集团总部",
+        "children": [
+          {
+            "id": 4,
+            "label": "企业IT中心",
+            "children": [
+              {
+                "id": 11,
+                "label": "JAVA开发部",
+                "children": [
+                  {
+                    "id": 12,
+                    "label": "张三"
+                  },
+                  {
+                    "id": 13,
+                    "label": "李四"
+                  },
+                  {
+                    "id": 14,
+                    "label": "王五"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "label": "人力资源中心",
+            "disabled": true
+          },
+          {
+            "id": 15,
+            "label": "培训中心",
+            "disabled": true
+          },
+          {
+            "id": 16,
+            "label": "行政中心",
+            "disabled": true
+          },
+          {
+            "id": 17,
+            "label": "战略管理中心",
+            "disabled": true
+          },
+          {
+            "id": 18,
+            "label": "市场与用户研究室",
+            "disabled": true
+          },
+          {
+            "id": 19,
+            "label": "共享中心",
+            "disabled": true
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "label": "华北一区",
+        "disabled": true
+      },
+      {
+        "id": 8,
+        "label": "国美互联网公司",
+        "disabled": true
+      },
+      {
+        "id": 9,
+        "label": "国美控股集团",
+        "disabled": true
+      },
+      {
+        "id": 10,
+        "label": "极信手机公司",
+        "disabled": true
+      }
+    ]
+  }
+]
