@@ -18,19 +18,21 @@
           </h3>
           <div class="tree-transfer__list">
             <el-tree
-                    :data="treeData"
-                    node-key="id"
                     ref="tree"
+                    :data="treeData"
+                    :node-key="nodeKey"
+                    :props="defaultProps"
                     :highlight-current="true"
                     :expand-on-click-node="false">
             </el-tree>
           </div>
         </div>
         <div class="tree-transfer__middle">
-          <el-button type="primary"
-                     icon="el-icon-arrow-right"
-                     circle
-                     @click="handleAdd">
+          <el-button
+                  type="primary"
+                  icon="el-icon-arrow-right"
+                  circle
+                  @click="handleAdd">
           </el-button>
         </div>
         <div class="tree-transfer__right">
@@ -39,7 +41,13 @@
             <span class="tree-transfer__right-close">清空</span>
           </h3>
           <div class="tree-transfer__list">
-
+            <ul class="tree-transfer__list-ul">
+              <li class="tree-transfer__list-li" v-for="item of targetNodes" :key="item[nodeKey]">
+                <label>{{item[defaultProps.label]}}</label>
+                <span class="tree-transfer__list-delete"
+                   @click="handleDeleteItem(item[nodeKey])">删除</span>
+              </li>
+            </ul>
           </div>
         </div>
       </section>
@@ -80,6 +88,14 @@ export default {
       type: Array,
       default: () => ['源列表', '目标列表'],
     },
+    nodeKey: {
+      type: String,
+      default: 'id',
+    },
+    defaultProps: {
+      type: Object,
+      default: () => ({ label: 'label', children: 'children' }),
+    },
     // dialog 显示状态
     dialogVisible: {
       type: Boolean,
@@ -94,6 +110,18 @@ export default {
   data() {
     return {
       visible: false,
+      targetNodes: [
+        {
+          id: 2,
+          label: '华北一区',
+          disabled: true,
+        },
+        {
+          id: 3,
+          label: '华北二区',
+          disabled: true,
+        },
+      ],
     };
   },
   computed: {
@@ -116,14 +144,18 @@ export default {
     handleAdd() {
       console.log(this.$refs.tree.getCurrentKey());
     },
+    handleDeleteItem() {
+
+    },
   },
 };
 </script>
 
 <style lang="less">
   .tree-transfer {
-    h3 {
+    h3, ul, li {
       margin: 0;
+      padding: 0;
     }
 
     .tree-transfer__content {
@@ -173,6 +205,38 @@ export default {
           color: #67c23a;
           font-size: 14px;
           cursor: pointer;
+        }
+
+        .tree-transfer__list-ul {
+          padding-bottom: 20px;
+        }
+
+        .tree-transfer__list-li {
+          position: relative;
+          padding: 4px 24px 4px 10px;
+          border-radius: 3px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        .tree-transfer__list-li:hover {
+          background-color: #f5f7fa;
+        }
+
+        .tree-transfer__list-li:hover .tree-transfer__list-delete {
+          display: block;
+        }
+
+        .tree-transfer__list-delete {
+          display: none;
+          position: absolute;
+          top: 50%;
+          right: 10px;
+          margin-top: -10px;
+          color: #f56c6c;
+          cursor: pointer;
+          text-align: center;
         }
       }
 
