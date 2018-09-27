@@ -42,8 +42,10 @@
           </h3>
           <div class="tree-transfer__list">
             <ul class="tree-transfer__list-ul">
-              <li class="tree-transfer__list-li" v-for="item of targetNodes" :key="item[nodeKey]">
-                <label>{{item[defaultProps.label]}}</label>
+              <li class="tree-transfer__list-li"
+                  v-for="(item, index) of targetNodes"
+                  :key="item[nodeKey]">
+                <label>{{index + 1 + '.' + item[defaultProps.label]}}</label>
                 <span class="tree-transfer__list-delete"
                    @click="handleDeleteItem(item[nodeKey])">删除</span>
               </li>
@@ -132,6 +134,12 @@ export default {
   created() {
     this.visible = this.dialogVisible;
   },
+  mounted() {
+    window.addEventListener('beforeunload', e => this.beforeunloadHandler(e));
+  },
+  destroyed() {
+    window.removeEventListener('beforeunload', e => this.beforeunloadHandler(e));
+  },
   methods: {
     handleAdd() {
       const currNode = this.$refs.tree.getCurrentNode();
@@ -160,7 +168,7 @@ export default {
       return this.targetNodes.some(item => item[this.nodeKey] === node[this.nodeKey]);
     },
     handleDialogOpen() {
-      if (typeof this.getLocal(LOCAL_KEY) !== 'undefined') {
+      if (this.getLocal(LOCAL_KEY) != null) {
         this.targetNodes = JSON.parse(this.getLocal(LOCAL_KEY));
       }
     },
@@ -168,11 +176,17 @@ export default {
       this.$emit('close');
       this.visible = false;
     },
+    beforeunloadHandler(e) {
+      this.removeLocal(LOCAL_KEY);
+    },
     setLocal(key, value) {
-      localStorage.setItem(key, value);
+      sessionStorage.setItem(key, value);
     },
     getLocal(key) {
-      return localStorage.getItem(key);
+      return sessionStorage.getItem(key);
+    },
+    removeLocal(key) {
+      sessionStorage.removeItem(key);
     },
   },
 };
