@@ -176,7 +176,7 @@ export default {
       this.$emit('close');
       this.visible = false;
     },
-    beforeunloadHandler(e) {
+    beforeunloadHandler() {
       this.removeLocal(LOCAL_KEY);
     },
     setLocal(key, value) {
