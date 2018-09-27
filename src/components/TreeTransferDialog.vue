@@ -4,6 +4,7 @@
             :title="dialogTitle"
             :visible.sync="visible"
             :before-close="modalClose"
+            @open="handleDialogOpen"
             class="tree-transfer__dialog">
       <section class="tree-transfer__content">
         <div class="tree-transfer__left">
@@ -128,12 +129,8 @@ export default {
       this.visible = newValue;
     },
   },
-  mounted() {
+  created() {
     this.visible = this.dialogVisible;
-    if (this.getLocal(LOCAL_KEY) != null) {
-      this.targetNodes = this.getLocal(LOCAL_KEY);
-      console.log(this.targetNodes);
-    }
   },
   methods: {
     handleAdd() {
@@ -150,7 +147,7 @@ export default {
     handleSubmit() {
       const value = this.targetNodes.map(item => item.label).toString();
       this.$emit('submit', value);
-      this.setLocal(LOCAL_KEY, this.targetNodes);
+      this.setLocal(LOCAL_KEY, JSON.stringify(this.targetNodes));
       this.modalClose();
     },
     handleNodeClick(node) {
@@ -162,6 +159,11 @@ export default {
     isExistedTargetNode(node) {
       return this.targetNodes.some(item => item[this.nodeKey] === node[this.nodeKey]);
     },
+    handleDialogOpen() {
+      if (typeof this.getLocal(LOCAL_KEY) !== 'undefined') {
+        this.targetNodes = JSON.parse(this.getLocal(LOCAL_KEY));
+      }
+    },
     modalClose() {
       this.$emit('close');
       this.visible = false;
@@ -170,7 +172,7 @@ export default {
       localStorage.setItem(key, value);
     },
     getLocal(key) {
-      localStorage.getItem(key);
+      return localStorage.getItem(key);
     },
   },
 };
