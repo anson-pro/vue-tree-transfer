@@ -151,6 +151,11 @@ export default {
     },
     handleDeleteItem(id) {
       this.targetNodes = this.targetNodes.filter(item => item[this.nodeKey] !== id);
+      const currNode = this.$refs.tree.getCurrentNode();
+      const existed = this.isExistedTargetNode(currNode);
+      if (!existed) {
+        this.canAddNode = false;
+      }
     },
     handleSubmit() {
       const value = this.targetNodes.map(item => item.label).toString();
